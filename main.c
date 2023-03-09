@@ -1,19 +1,26 @@
 #include <stdio.h>
-#include <string.h>
 
-int main(void){
-    char sentence[100];
-    printf("enter sentence : ");
-    fgets(sentence, sizeof sentence, stdin);
-    int i = 0, cnt = 0;
-    while(sentence[i] != '\0'){
-        if(sentence[i] >= 65 && sentence[i] <= 90 ){ // if character == uppercase
-            sentence[i] += 32;// lower case : 97 ~ 122,  upper case: 65 90
-            cnt++;
-        }
-        i++;
-    }
-    printf("replaced sentence: %s", sentence);
-    printf("replaced character : %d", cnt);
+void swap(double *pa, double *pb);
+void line_up(double *a, double *b, double *c);
+int main() {
+    double max, mid, min;
+    printf("Enter three real number values : ");
+    scanf("%lf%lf%lf", &max, &mid, &min);
+    line_up(&max, &mid, &min);
+    printf("Output sorted values : %.1lf, %.1lf, %.1lf\n", max, mid, min);
     return 0;
+}
+
+
+void swap(double *pa, double *pb){
+    double temp;
+    temp = *pa;
+    *pa = *pb;
+    *pb = temp;
+}
+
+void line_up(double *a, double *b, double *c){
+    if(*a < *b) swap(a, b);
+    if(*b < *c) swap(b, c);
+    if(*a < *b) swap(a, b);
 }
