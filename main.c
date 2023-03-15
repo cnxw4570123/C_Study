@@ -1,27 +1,15 @@
 #include <stdio.h>
-
-int max_length(char *str, int size);
+#include <string.h>
 
 int main(void ){
-    char str[100];
-    int max = 0, value;
-    while (1){
-        value = max_length(str, 100);
-        if(max < value) max = value;
-        if(value == EOF) break;
+    char str[80];
+    char str2[80];
+    printf("input words : ");
+    scanf("%s", str);
+    strcpy(str2, str);
+    if(strlen(str2) > 5){
+        for (int i = 5; i < strlen(str2); i++) *(str2 + i) = '*';
     }
-    printf("가장 긴 단어의 길이 : %d", max);
+    printf("input words : %s, replaced words: %s\n", str, str2);
     return 0;
-}
-
-int max_length(char *str, int size){
-    int ch, max = 0;
-    ch = getchar();
-    if(ch == EOF) return EOF;
-    while(ch != '\n'){
-        *str++ = ch;
-        ch = getchar();
-        max++;
-    }
-    return max;
 }
