@@ -1,35 +1,36 @@
 #include <stdio.h>
-#include <string.h>
-
-void swap(char *type, void *vp1, void *vp2);
+#include <stdlib.h>
 
 int main(void) {
-    int age1, age2;
-    double height1, height2;
+    int n;
+    printf("양수 입력 : ");
+    scanf("%d", &n);
+    // 0 ~ n까지의 수
+    int *is_not_pn = (int *) calloc(++n , sizeof(int));
+    //소수면 0 , 소수가 아니면 1
+    *is_not_pn = 1;
+    *(is_not_pn + 1) = 1;
+    // 0, 1을 제외한 2부터 n까지의 수 중 i의 배수는 소수가 x
+    // i * 1 ~ (n/i)까지의 배수는 1로 초기화
+    // i의 배수는 건너띄기
 
-    printf("첫 번째 사람의 나이와 키 입력 : ");
-    scanf("%d%lf", &age1, &height1);
-    printf("%두 번째 사람의 나이와 키 입력 : ");
-    scanf("%d%lf", &age2, &height2);
-
-    swap("int", &age1 ,&age2);
-    swap("double", &height1 ,&height2);
-    printf("첫 번째 사람의 나이와 키 : %d, %.1lf\n", age1, height1);
-    printf("두 번째 사람의 나이와 키 : %d, %.1lf\n", age2, height2);
-
-    return 0;
-}
-
-void swap(char *type, void *vp1, void *vp2){
-    if(strcmp(type, "int") == 0){
-        int temp = *(int *)vp1;
-//        int *temp = *(int *)vp1; 주소가 바뀌기 때문에 안에 있는 값 또한 달라짐
-        *(int *)vp1 = *(int *)vp2;
-        *(int *)vp2 = temp;
-//        *(int *)vp2 = *temp; 이렇게 사용할 시 이전에 가리키던 vp1의 주소가 vp2로 바뀌었기 때문에 vp2에 vp2를 할당하는 꼴이된다.
-    } else if(strcmp(type, "double") == 0){
-        double temp = *(double *)vp1;
-        *(double *)vp1 = *(double *)vp2;
-        *(double *)vp2 = temp;
+    for (int i = 2; i <= n; ++i) {
+        for (int j = 2; j <= (n / i); ++j) {
+            if (is_not_pn[i * j] != 0) continue;
+            is_not_pn[i * j] = 1;
+        }
     }
+
+    for (int i = 2; i < n; ++i) {
+        if(!is_not_pn[i]){
+            printf("%5d", i);
+        }else{
+            printf("%5c", 'X');
+        }
+        if ((i - 1) % 5 == 0) {
+            printf("\n");
+        }
+    }
+    free(is_not_pn);
+    return 0;
 }
