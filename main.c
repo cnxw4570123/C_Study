@@ -1,36 +1,58 @@
 #include <stdio.h>
-#include <stdlib.h>
+
+typedef struct {
+    int num;
+    char name[20];
+    int kor;
+    int eng;
+    int math;
+    int total;
+    int grade;
+} Student;
+
+void selection_sort(Student *arr, int size);
+void swap(Student *s1, Student *s2);
 
 int main(void) {
-    int n;
-    printf("양수 입력 : ");
-    scanf("%d", &n);
-    // 0 ~ n까지의 수
-    int *is_not_pn = (int *) calloc(++n , sizeof(int));
-    //소수면 0 , 소수가 아니면 1
-    *is_not_pn = 1;
-    *(is_not_pn + 1) = 1;
-    // 0, 1을 제외한 2부터 n까지의 수 중 i의 배수는 소수가 x
-    // i * 1 ~ (n/i)까지의 배수는 1로 초기화
-    // i의 배수는 건너띄기
-
-    for (int i = 2; i <= n; ++i) {
-        for (int j = 2; j <= (n / i); ++j) {
-            if (is_not_pn[i * j] != 0) continue;
-            is_not_pn[i * j] = 1;
-        }
+    Student st[5];
+    for (int i = 0; i < 5; ++i) {
+        char name[20];
+        printf("학번 : ");
+        scanf("%d", &st[i].num);
+        printf("이름 : ");
+        scanf("%s", st[i].name);
+        printf("국어, 영어, 수학 점수 : ");
+        scanf("%d%d%d", &st[i].kor, &st[i].eng, &st[i].math);
+        st[i].total = st[i].kor+st[i].eng+st[i].math;
+        st[i].grade = (st[i].total / 3.0 ) >= 90 ? 'A' : (st[i].total / 3.0 ) >= 80 ? 'B' : (st[i].total / 3.0 ) > 70 ? 'C' : 'F';
     }
-
-    for (int i = 2; i < n; ++i) {
-        if(!is_not_pn[i]){
-            printf("%5d", i);
-        }else{
-            printf("%5c", 'X');
-        }
-        if ((i - 1) % 5 == 0) {
-            printf("\n");
-        }
+    printf("# before sorting data...\n");
+    for (int i = 0; i < 5; ++i) {
+        printf("%5d\t%5s\t%5d%5d%5d%5d%5.1lf%5c\n", st[i].num, st[i].name, st[i].kor, st[i].eng, st[i].math, st[i].total, st[i].total / 3.0, st[i].grade);
     }
-    free(is_not_pn);
+    printf("# after sorting data...\n");
+    selection_sort(st, 5);
+
+    for (int i = 0; i < 5; ++i) {
+        printf("%5d\t%5s\t%5d%5d%5d%5d%5.1lf%5c\n", st[i].num, st[i].name, st[i].kor, st[i].eng, st[i].math, st[i].total, st[i].total / 3.0, st[i].grade);
+    }
     return 0;
+}
+
+void selection_sort(Student *arr, int size){
+    for (int i = 0; i < size - 1; ++i) {
+        Student min = arr[i];
+        int total_min = min.kor + min.eng + min.kor;
+        for (int j = i+1; j < size; ++j) {
+            int total_current = arr[j].kor + arr[j].eng + arr[j].math;
+            if(total_current > total_min){
+                swap(&arr[i], &arr[j]);
+            }
+        }
+    }
+}
+void swap(Student *s1, Student *s2){
+    Student temp = *s1;
+    *s1 = *s2;
+    *s2 = temp;
 }
