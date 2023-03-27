@@ -1,58 +1,75 @@
 #include <stdio.h>
+#include <stdlib.h>
+typedef struct Node{
+    int data;
+    struct Node *next;
+    struct Node *prev;
+} Node;
 
-typedef struct {
-    int num;
-    char name[20];
-    int kor;
-    int eng;
-    int math;
-    int total;
-    int grade;
-} Student;
-
-void selection_sort(Student *arr, int size);
-void swap(Student *s1, Student *s2);
-
-int main(void) {
-    Student st[5];
-    for (int i = 0; i < 5; ++i) {
-        char name[20];
-        printf("학번 : ");
-        scanf("%d", &st[i].num);
-        printf("이름 : ");
-        scanf("%s", st[i].name);
-        printf("국어, 영어, 수학 점수 : ");
-        scanf("%d%d%d", &st[i].kor, &st[i].eng, &st[i].math);
-        st[i].total = st[i].kor+st[i].eng+st[i].math;
-        st[i].grade = (st[i].total / 3.0 ) >= 90 ? 'A' : (st[i].total / 3.0 ) >= 80 ? 'B' : (st[i].total / 3.0 ) > 70 ? 'C' : 'F';
-    }
-    printf("# before sorting data...\n");
-    for (int i = 0; i < 5; ++i) {
-        printf("%5d\t%5s\t%5d%5d%5d%5d%5.1lf%5c\n", st[i].num, st[i].name, st[i].kor, st[i].eng, st[i].math, st[i].total, st[i].total / 3.0, st[i].grade);
-    }
-    printf("# after sorting data...\n");
-    selection_sort(st, 5);
-
-    for (int i = 0; i < 5; ++i) {
-        printf("%5d\t%5s\t%5d%5d%5d%5d%5.1lf%5c\n", st[i].num, st[i].name, st[i].kor, st[i].eng, st[i].math, st[i].total, st[i].total / 3.0, st[i].grade);
-    }
-    return 0;
+Node *create_node(int data){
+    Node *new_node = (Node *) malloc(sizeof(Node));
+    new_node->prev = NULL;
+    new_node->next = NULL;
+    new_node->data = data;
+    return new_node;
 }
 
-void selection_sort(Student *arr, int size){
-    for (int i = 0; i < size - 1; ++i) {
-        Student min = arr[i];
-        int total_min = min.kor + min.eng + min.kor;
-        for (int j = i+1; j < size; ++j) {
-            int total_current = arr[j].kor + arr[j].eng + arr[j].math;
-            if(total_current > total_min){
-                swap(&arr[i], &arr[j]);
-            }
+void append_node(Node **head, Node *new_node){
+    if (*head == NULL) {
+        *head = new_node;
+        (*head)->next = *head;
+        (*head)->prev = *head;
+    }else{
+        Node *tail = (*head)->prev;
+        tail->next->prev = new_node;
+        tail->next = new_node;
+        new_node->next = *head;
+        new_node->prev = tail;
+    }
+}
+
+void delete_node(Node **head, Node *remove){
+    if (*head == remove) {
+        if ((*head)->next != *head) {
+            *head = (*head)->next;
         }
     }
+    remove->prev->next = remove->next;
+    remove->next->prev = remove->prev;
+    remove->next = NULL;
+    remove->prev = NULL;
 }
-void swap(Student *s1, Student *s2){
-    Student temp = *s1;
-    *s1 = *s2;
-    *s2 = temp;
+
+Node *get_node_at(Node *start, int count){
+    Node *current = start;
+    for (int i = 0; i < count; ++i) {
+        current = current ->next;
+    }
+    return current;
+}
+
+int main(void){
+    Node *list = NULL;
+    int n, k;
+    scanf("%d%d", &n, &k);
+    k--;
+    for (int i = 0; i < n; ++i) {
+        append_node(&list, create_node(i + 1));
+    }
+    Node *start = list;
+    printf("<");
+    while (start->next != NULL) {
+        Node *del = get_node_at(start, k);
+        int data = del->data;
+        start = del->next;
+        delete_node(&list, del);
+        if (start->next == NULL) printf("%d", data);
+        else {
+            printf("%d, ", data);
+            free(del);
+        }
+    }
+    free(list);
+    printf(">");
+    return 0;
 }
