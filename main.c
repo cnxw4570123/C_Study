@@ -1,75 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
-typedef struct Node{
-    int data;
-    struct Node *next;
-    struct Node *prev;
-} Node;
+#include <string.h>
 
-Node *create_node(int data){
-    Node *new_node = (Node *) malloc(sizeof(Node));
-    new_node->prev = NULL;
-    new_node->next = NULL;
-    new_node->data = data;
-    return new_node;
+
+typedef struct arr_stack{
+    int capacity;
+    int top;
+    int *nodes;
+}Stack;
+
+int empty(Stack *stack){
+    return stack->top < 0; // 비었으면 1, 아니면 0
 }
 
-void append_node(Node **head, Node *new_node){
-    if (*head == NULL) {
-        *head = new_node;
-        (*head)->next = *head;
-        (*head)->prev = *head;
-    }else{
-        Node *tail = (*head)->prev;
-        tail->next->prev = new_node;
-        tail->next = new_node;
-        new_node->next = *head;
-        new_node->prev = tail;
+int top(Stack *stack){
+    if(stack->top == -1) return -1;
+    return stack->nodes[stack->top];
+}
+
+int size(Stack *stack){
+    return stack->top + 1;
+}
+
+void push(Stack *stack, int x){
+    if(stack->top < stack->capacity){
+        stack->top++;
+        stack->nodes[stack->top] = x;
     }
 }
 
-void delete_node(Node **head, Node *remove){
-    if (*head == remove) {
-        if ((*head)->next != *head) {
-            *head = (*head)->next;
+int pop(Stack *stack){
+    if(stack->top > -1)
+        return stack->nodes[stack->top--];
+    return -1;
+}
+
+void create_stack(Stack **stack, int capacity){
+    *stack = (Stack *) malloc(sizeof(Stack));
+    (*stack)->nodes = (int *) malloc(sizeof(int) * capacity);
+    (*stack)->capacity = capacity;
+    (*stack)->top = -1;
+}
+
+int main(){
+    Stack *stack = NULL;
+    int n;
+    scanf("%d", &n);
+    scanf("%*c");
+    create_stack(&stack, n);
+    char command[20];
+    while (n > 0){
+        n--;
+        fgets(command, sizeof command, stdin);
+        command[strlen(command) - 1] = '\0';
+        if(strcmp(command, "top") == 0){
+            printf("%d\n", top(stack));
+        } else if(strcmp(command, "empty") == 0){
+            printf("%d\n",empty(stack));
+        } else if(strcmp(command, "size") == 0){
+            printf("%d\n",size(stack));
+        } else if (strcmp(command, "pop") == 0) {
+            printf("%d\n", pop(stack));
+        } else{
+            //push x
+            char *num = command + 5;
+            push(stack, atoi(num));
         }
     }
-    remove->prev->next = remove->next;
-    remove->next->prev = remove->prev;
-    remove->next = NULL;
-    remove->prev = NULL;
-}
 
-Node *get_node_at(Node *start, int count){
-    Node *current = start;
-    for (int i = 0; i < count; ++i) {
-        current = current ->next;
-    }
-    return current;
-}
-
-int main(void){
-    Node *list = NULL;
-    int n, k;
-    scanf("%d%d", &n, &k);
-    k--;
-    for (int i = 0; i < n; ++i) {
-        append_node(&list, create_node(i + 1));
-    }
-    Node *start = list;
-    printf("<");
-    while (start->next != NULL) {
-        Node *del = get_node_at(start, k);
-        int data = del->data;
-        start = del->next;
-        delete_node(&list, del);
-        if (start->next == NULL) printf("%d", data);
-        else {
-            printf("%d, ", data);
-            free(del);
-        }
-    }
-    free(list);
-    printf(">");
     return 0;
 }
