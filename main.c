@@ -1,22 +1,28 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include "Point.h"
-
-int comparePoint(const void *_elem1, const void *_elem2){
-    Point *elm1 = (Point *) _elem1;
-    Point *elm2 = (Point *) _elem2;
-
-    if(elm1->point > elm2->point) return 1;
-    else if(elm1->point < elm2->point) return -1;
-    return 0;
-}
 
 int main() {
-    Point *congratulation = &DataSet[14142];
-    printf("정렬 전\n");
-    printf("고객 아이디 : %d, 고객 포인트 : %f\n", congratulation->id, congratulation->point);
-    qsort(DataSet, 30000, sizeof(Point), comparePoint);
-    printf("정렬 후\n");
-    printf("고객 아이디 : %d, 고객 포인트 : %f\n", congratulation->id, congratulation->point);
+    int n, num;
+    scanf("%d", &n);
+    int *data = (int *) calloc(n, sizeof(int));
+
+    int cnt = 0;
+    while (cnt < n) {
+        scanf("%d", &num);
+        for (int i = 0; i < cnt; ++i) {
+            if (num < data[i]) {
+                memmove(&data[i + 1], &data[i], sizeof(int) * (cnt - i));
+                data[i] = num;
+                break;
+            }
+        }
+        if(data[cnt] == 0) data[cnt] = num;
+        cnt++;
+    }
+
+    for (int i = 0; i < n; ++i) {
+        printf("%d\n", *(data + i));
+    }
     return 0;
 }
